@@ -4,14 +4,10 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +24,16 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entity.Classs;
-import com.example.demo.entity.FKUser;
 import com.example.demo.entity.Music;
 import com.example.demo.reponsitory.UsRepository;
 import com.example.demo.service.ClassService;
 import com.example.demo.service.MusicService;
-import com.example.demo.service.UsService;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 @Component
 @RestController
@@ -62,7 +61,7 @@ public class FileUtil {
 			if (!file.isEmpty()) {
 				String path = System.getProperty("user.dir");
 				path += File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
-						+ "static";
+								+ "static";
 				if (i == 0)
 					path += File.separator + "music";
 				else
@@ -100,20 +99,19 @@ public class FileUtil {
 		music.setId(musicService.nullfirst());
 		music.setSrc(src);
 		music.setImage(image);
-		if(classService.findByClassname(classs.getClassname()) != null){
-			
+		if (classService.findByClassname(classs.getClassname()) != null) {
+
 			music.setClasss(classService.findByClassname(classs.getClassname()));
-		}
-		else{
-			
-			Classs cl=new Classs(classs.getClassname());
+		} else {
+
+			Classs cl = new Classs(classs.getClassname());
 			classService.save(cl);
 			music.setClasss(cl);
 			List<Classs> musicclass = classService.findAll();
 			webRequest.setAttribute("musicclass", musicclass, RequestAttributes.SCOPE_SESSION);
 		}
 		musicService.save(music);
-		Sort sort = new Sort(Sort.Direction.DESC,"clicks");
+		Sort sort = new Sort(Sort.Direction.DESC, "clicks");
 		Pageable page = PageRequest.of(0, 5, sort);
 		Page<Music> musics = musicService.findAll(page);
 		webRequest.setAttribute("Objects", musics, RequestAttributes.SCOPE_SESSION);
@@ -149,7 +147,7 @@ public class FileUtil {
 			if (!file.isEmpty()) {
 				String path = System.getProperty("user.dir");
 				path += File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
-						+ "static";
+								+ "static";
 				if (i == 0)
 					path += File.separator + "music";
 				else
@@ -184,7 +182,7 @@ public class FileUtil {
 		System.out.println("loaded:" + music);
 		music.setClasss(classService.findByClassname(classs.getClassname()));
 		musicService.updateOne(music.getNumber(), music);
-		Sort sort = new Sort(Sort.Direction.DESC,"clicks");
+		Sort sort = new Sort(Sort.Direction.DESC, "clicks");
 		Pageable page = PageRequest.of(0, 5, sort);
 		Page<Music> musics = musicService.findAll(page);
 		webRequest.setAttribute("Objects", musics, RequestAttributes.SCOPE_SESSION);
@@ -200,7 +198,7 @@ public class FileUtil {
 		// 下载文件路径
 		String path = System.getProperty("user.dir");
 		path += File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
-				+ "static" + File.separator + "userinfo_img";
+						+ "static" + File.separator + "userinfo_img";
 		// String path = request.getServletContext().getRealPath("/upload/");
 		/*
 		 * String path = "C:" + File.separator + "Users" +File.separator +
@@ -236,7 +234,7 @@ public class FileUtil {
 
 		String path = System.getProperty("user.dir");
 		path += File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator
-				+ "static" + File.separator + "music";
+						+ "static" + File.separator + "music";
 
 		File file = new File(path + File.separator + filename);
 		// ok表示Http中的状态200
@@ -269,7 +267,7 @@ public class FileUtil {
 		List<Music> musics = musicService.findAll();
 
 		// excel标题
-		String[] title = { "编号", "名称", "歌手", "路径", "点击量", "图片" };
+		String[] title = {"编号", "名称", "歌手", "路径", "点击量", "图片"};
 
 		// excel文件名
 		String fileName = "music_" + System.currentTimeMillis() + ".xls";
@@ -305,12 +303,7 @@ public class FileUtil {
 	// 发送响应流方法
 	public void setResponseHeader(HttpServletResponse response, String fileName) {
 		try {
-			try {
-				fileName = new String(fileName.getBytes(), "UTF8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			fileName = new String(fileName.getBytes(), StandardCharsets.UTF_8);
 			// response.setContentType("application/octet-stream;charset=ISO8859-1");
 			// response.setHeader("Content-Disposition", "attachment;filename="+
 			// fileName);

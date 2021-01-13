@@ -6,20 +6,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import com.example.demo.entity.Music;
 import com.example.demo.entity.Classs;
+import com.example.demo.entity.Music;
 
-public interface MusicRepository extends JpaRepository<Music, Integer>,JpaSpecificationExecutor<Music> {
+public interface MusicRepository extends JpaRepository<Music, Integer>, JpaSpecificationExecutor<Music> {
 
 	@SuppressWarnings("unchecked")
 	Music save(Music music);
+
 	List<Music> findAll();
+
 	long count();
+
 	Music findByNumber(Integer number);//确保音乐编号唯一
-	Page<Music> findByClasss(Classs classs,Pageable page);
+
+	Page<Music> findByClasss(Classs classs, Pageable page);
+
 	void deleteByNumber(Integer number);
 //	@Query(value = "select s from Music s where s.classs.classname = ?code")//
 //	@Query(value = "select s from Music s where s.classs.classname = :code")

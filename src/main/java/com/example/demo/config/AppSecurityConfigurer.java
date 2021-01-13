@@ -16,40 +16,41 @@ import com.example.demo.service.UsService;
 
 
 @Configuration
-public class AppSecurityConfigurer extends WebSecurityConfigurerAdapter{
-	
+public class AppSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+	// /**
+	//  * 注入认证处理类，处理不同用户跳转到不同的页面
+	//  * permitAll表示该请求任何人都可以访问
+	//  **/
+	// @Autowired
+	// AppAuthenticationSuccessHandler appAuthenticationSuccessHandler;
+
 	/**
-	 * 注入认证处理类，处理不同用户跳转到不同的页面
-	 * permitAll表示该请求任何人都可以访问
-	 * */
-	//@Autowired
-	//AppAuthenticationSuccessHandler appAuthenticationSuccessHandler;
-	/**
-	 * 用户授权操作 
-	 * */
+	 * 用户授权操作
+	 */
 	@Override
-    protected void configure(HttpSecurity http) throws Exception {
+	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-		// spring-security 5.0 之后需要过滤静态资源
-		.antMatchers("/login","/downloadmusic","/test","/uploadUs","/regist","/css/**","/js/**","/img/*",
-				"/background/*","/musicCloect","/music/**","/other/*").permitAll() 
-	  	.antMatchers("/other/*","/admin/*").hasAnyRole("ADMIN")
-	  	.antMatchers("/other/*").hasAnyRole("SUPER")
-	  	.antMatchers("/other/*").hasAnyRole("VIP")
-	  	.antMatchers("/other/*").hasAnyRole("OTHER")
-	  	.anyRequest().authenticated()
-	  	.and()
-	  	.formLogin().loginPage("/login").successHandler(appAuthenticationSuccessHandler)
-	  	.usernameParameter("loginName").passwordParameter("password")
-	  	.and()
-	  	.logout().permitAll()
-	  	.and()
-	  	.exceptionHandling().accessDeniedPage("/login");
-    }
+				// spring-security 5.0 之后需要过滤静态资源
+				.antMatchers("/login", "/downloadmusic", "/test", "/uploadUs", "/regist", "/css/**", "/js/**", "/img/*",
+						"/background/*", "/musicCloect", "/music/**", "/other/*").permitAll()
+				.antMatchers("/other/*", "/admin/*").hasAnyRole("ADMIN")
+				.antMatchers("/other/*").hasAnyRole("SUPER")
+				.antMatchers("/other/*").hasAnyRole("VIP")
+				.antMatchers("/other/*").hasAnyRole("OTHER")
+				.anyRequest().authenticated()
+				.and()
+				.formLogin().loginPage("/login").successHandler(appAuthenticationSuccessHandler)
+				.usernameParameter("loginName").passwordParameter("password")
+				.and()
+				.logout().permitAll()
+				.and()
+				.exceptionHandling().accessDeniedPage("/login");
+	}
 
 	/**
 	 * 用户认证操作
-	 * */
+	 */
   /*  @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     	System.out.println("AppSecurityConfigurer configureGlobal() 调用......");
@@ -60,55 +61,55 @@ public class AppSecurityConfigurer extends WebSecurityConfigurerAdapter{
 
 	// 依赖注入用户服务类
 	@Autowired
-    private UsService userService;
-	
+	private UsService userService;
+
 	// 依赖注入加密接口
 	@Autowired
-    private PasswordEncoder passwordEncoder;
-	
+	private PasswordEncoder passwordEncoder;
+
 	// 依赖注入用户认证接口
 	@Autowired
-    private AuthenticationProvider authenticationProvider;
-	
+	private AuthenticationProvider authenticationProvider;
+
 	// 依赖注入认证处理成功类，验证用户成功后处理不同用户跳转到不同的页面
 	@Autowired
 	AppAuthenticationSuccessHandler appAuthenticationSuccessHandler;
-	
+
 	/*
 	 *  BCryptPasswordEncoder是Spring Security提供的PasswordEncoder接口是实现类
 	 *  用来创建密码的加密程序，避免明文存储密码到数据库
 	 */
 	@Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-	 
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 	// DaoAuthenticationProvider是Spring Security提供AuthenticationProvider的实现
 	@Bean
-    public AuthenticationProvider authenticationProvider() {
+	public AuthenticationProvider authenticationProvider() {
 		// 创建DaoAuthenticationProvider对象
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        // 不要隐藏"用户未找到"的异常
-        provider.setHideUserNotFoundExceptions(false);
-        // 通过重写configure方法添加自定义的认证方式。
-        provider.setUserDetailsService(userService);
-        // 设置密码加密程序认证
-        provider.setPasswordEncoder(passwordEncoder);
-        
-        return provider;
-    }
-	
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    	// 设置认证方式。
-    	auth.authenticationProvider(authenticationProvider);
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		// 不要隐藏"用户未找到"的异常
+		provider.setHideUserNotFoundExceptions(false);
+		// 通过重写configure方法添加自定义的认证方式。
+		provider.setUserDetailsService(userService);
+		// 设置密码加密程序认证
+		provider.setPasswordEncoder(passwordEncoder);
 
-    }
+		return provider;
+	}
 
-    /**
-     * 设置了登录页面，而且登录页面任何人都可以访问，然后设置了登录失败地址，也设置了注销请求，注销请求也是任何人都可以访问的。 
-     * permitAll表示该请求任何人都可以访问，.anyRequest().authenticated(),表示其他的请求都必须要有权限认证。
-     * */
- }
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		// 设置认证方式。
+		auth.authenticationProvider(authenticationProvider);
+
+	}
+
+	/**
+	 * 设置了登录页面，而且登录页面任何人都可以访问，然后设置了登录失败地址，也设置了注销请求，注销请求也是任何人都可以访问的。
+	 * permitAll表示该请求任何人都可以访问，.anyRequest().authenticated(),表示其他的请求都必须要有权限认证。
+	 * */
+}
 
 

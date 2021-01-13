@@ -1,22 +1,13 @@
 package com.example.demo.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.WebRequest;
 
 @Controller
 public class IndexController {
@@ -28,9 +19,10 @@ public class IndexController {
 //		 
 		return "login";
 	}
+
 	@RequestMapping("/regist")
 	public String regist() {
-		
+
 		return "regist";
 	}
 
@@ -53,8 +45,7 @@ public class IndexController {
 	public String otherPage() {
 		return "redirect:/getStusByPage?pageIndex=1&pageSize=5";
 	}
-	
-	
+
 
 	@RequestMapping(value = "/logout")
 	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {

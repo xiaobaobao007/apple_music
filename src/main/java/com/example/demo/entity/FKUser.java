@@ -3,17 +3,7 @@ package com.example.demo.entity;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Table(name = "tb_us")
 @Entity
@@ -28,19 +18,19 @@ public class FKUser implements Serializable {
 	private String username;
 	private String loginName;
 	private String password;
-	@ManyToMany(cascade = {CascadeType.REFRESH }, fetch = FetchType.EAGER)
-	@JoinTable(name = "tb_user_role", 
-			joinColumns = { @JoinColumn(name = "user_id")}, 
-			inverseJoinColumns = {@JoinColumn(name = "role_id") })
+	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+	@JoinTable(name = "tb_user_role",
+			joinColumns = {@JoinColumn(name = "user_id")},
+			inverseJoinColumns = {@JoinColumn(name = "role_id")})
 	private List<FKRole> roles;
 	@ManyToMany
 	@JoinTable(name = "tb_user_music")
 	private List<Music> musics;
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -76,13 +66,15 @@ public class FKUser implements Serializable {
 	public void setRoles(List<FKRole> roles) {
 		this.roles = roles;
 	}
+
 	public List<FKRole> getRoles() {
 		return roles;
 	}
+
 	@Override
 	public String toString() {
 		return "FKUser [id=" + id + ", loginName=" + loginName + ", username=" + username
-				+ ", password=" + password + ", roles=" + roles + "]";
+					   + ", password=" + password + ", roles=" + roles + "]";
 	}
 
 	public List<Music> getMusics() {
