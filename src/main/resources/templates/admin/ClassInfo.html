@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title>音乐分类信息管理</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}" />
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<style> 
+.div-a{ float:left;width:11%;} 
+.div-b{ float:left;width:88%;} 
+</style> 
+</head>
+<body>
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="height: 55px;">
+			<font size="4">大红包音乐欢迎您</font>
+			<font size="4" style="margin-left: 25px; color: #6ee694fc;">您的身份：</font>
+			<b th:text="${session.user}" style="font-size: 120%; color: #6ee694fc;"></b>
+			<font size="4" style="margin-left: 15px; color: #6ee694fc;">您的权限：</font>
+			<b id="role" th:text="${session.role}" style="font-size: 120%; color: #6ee694fc;"></b>
+			<button type="button" class="btn btn-primary pull-right"
+				onclick="window.location.href ='/logout'">退出当前用户</button>
+			<b id="suc" th:text="${success}"
+				style="margin-left: 50px; font-size: 120%; color: red; display: none;"></b>
+			<b id="fai" th:text="${faild}"
+				style="margin-left: 50px; font-size: 120%; color: red; display: none;"></b>
+		</div>
+	</div>
+	<div class="container div-a" >
+		<div class="navbar navbar-expand-sm bg-info navbar-dark" style="height: 600px;">
+			<div id="tabllle1" class="panel panel-primary" >
+				<div class="panel-heading">
+					<font size="4">音乐界面</font>
+				</div>
+			</div>
+			
+			<div id="tabllle2" class="panel panel-primary">
+				<div class="panel-heading">
+					<font size="4" >收藏音乐界面</font>
+				</div>
+			</div>
+			<div id="tabllle3" class="panel panel-primary">
+				<div class="panel-heading">
+					<font size="4" >用户信息界面</font>
+				</div>
+			</div>
+			<div id="tabllle4" class="panel panel-success">
+				<div class="panel-heading">
+					<font size="4" >音乐分类界面</font>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container div-b">
+		<div class="col-md-12">
+			<div class="dropdown">
+				<button class="btn btn-success" data-toggle="modal"
+					data-target="#exampleModal">添加音乐分类信息</button>
+			</div>
+			<div class="panel panel-primary"  style="margin: 10px 0px 0px 0px;">
+				<div class="panel-heading">
+					<h3 class="panel-title">音乐分类</h3>
+				</div>
+				<div class="panel-body">
+<!-- 					 table-responsive:响应式表格,在一个表展示所有的数据,当不够显示的时候可以左右滑动浏览 -->
+					<div class="table table-responsive">
+						
+<!-- 		                	.table-bordered 类为表格和其中的每个单元格增加边框。 -->
+<!-- 		                	.table-hover 类可以让 <tbody> 中的每一行对鼠标悬停状态作出响应。 -->
+		                
+						<table class="table table-bordered table-hover">
+							<tr>
+								<th class="text-center">序号</th>
+								<th class="text-center">分类编号</th>
+								<th class="text-center">分类名称</th>
+								<th class="text-center">操作</th>
+							</tr>
+
+							<tbody class="text-center" id="counts">
+								<tr th:each="cl,cltat:${session.classs}">
+									<td th:text="${cltat.count}"></td>
+									<td th:text="${cl.code}"></td>
+									<td th:text="${cl.classname}"></td>
+									<td><input type="button" class="btn btn-primary" th:onclick="'javascript:c('+${cltat.count}+')'" value="修改" >&nbsp;&nbsp;
+										<input type="button" class="btn btn-primary" th:onclick="'javascript:b('+${cl.code}+')'" value="删除" ></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<form class="form-horizontal" role="form" method="post"
+				enctype="multipart/form-data" th:action="@{/saveClass}"
+				style="margin: 75px 150px 0px 200px;">
+				<div class="modal fade" id="exampleModal" tabindex="-1"
+					role="dialog" aria-labelledby="exampleModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content animated bounceInRight"
+							style="margin: 20px 20px 0px -20px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+								<h4 class="modal-title" id="exampleModalLabel">
+									<font size="4"><b>添加新分类</b></font>
+								</h4>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 0px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐分类</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" name="classname"
+										style="width: 300px" placeholder="音乐分类" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 10px 0px 20px 100px;">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-success">&nbsp;&nbsp;提&nbsp;交
+										&nbsp;&nbsp;</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<form class="form-horizontal" role="form" method="post"
+				enctype="multipart/form-data" th:action="@{/updateClass}"
+				style="margin: 75px 150px 0px 200px;">
+				<div class="modal fade" id="updateModal" tabindex="-1"
+					role="dialog" aria-labelledby="exampleModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content animated bounceInRight"
+							style="margin: 20px 20px 0px -20px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+								<h4 class="modal-title" id="exampleModalLabel">
+									<font size="4"><b>更新音乐分类</b></font>
+								</h4>
+							</div>
+							<div style="display:none">
+									<input type="text"  id="code" name="code"/>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 0px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐分类</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" name="classname"
+										style="width: 300px" placeholder="请输入音乐分类" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 10px 0px 20px 100px;">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-success">&nbsp;&nbsp;提&nbsp;交
+										&nbsp;&nbsp;</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="modal fade" id="deletemodal" align="center" style="margin:100px 200px 0px 200px;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="redelete"></h4></br></br>
+							<input type="button" id="redeletebtn" class="btn btn-success" value="确认删除">&nbsp;&nbsp;
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消删除</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+ 	$(document).ready(function() { 
+ 		$("img").click(function() { 
+ 			var src = $(this).attr("src"); 
+ 			$("#picturemodalimg").attr("src", src); 
+ 			$("#picturemodal").modal("show"); 
+ 		}); 
+ 		$("#picturemodalimg").click(function() { 
+ 			$("#picturemodal").modal("hide"); 
+ 		}); 
+ 		$("#tabllle1").click(function(){
+			window.location.href="/getStusByPage?pageIndex=1&pageSize=5";
+		});
+		$("#tabllle2").click(function(){
+			window.location.href="/getcloectmusic?pageIndex=1&pageSize=5";
+		});
+		$("#tabllle3").click(function(){
+			window.location.href="/findAlluserInfo?pageIndex=1&pageSize=5";
+		});
+ 		if ($("#suc").text() != "") { 
+ 			$("#suc").show(); 
+ 		} 
+ 		if ($("#fai").text() != "") { 
+ 			$("#fai").show();
+ 		}
+ 	}); 
+ 	function Tomusic() {//跳转音乐信息页面
+		window.location.href = "/getStusByPage?pageIndex=1&pageSize=5";
+	}
+	function Tomusicuser() {//跳转用户信息页面
+		window.location.href = "/findAlluserInfo?pageIndex=1&pageSize=5";
+	}
+	function Tomusicclass() {//跳转音乐分类信息页面
+		window.location.href = "/findAllClass";
+	} 
+ 	function b(code) { 
+ 		$("#deletemodal").modal("show");
+		$("#redelete").text("请确认是否删除编号："+code+"  的音乐分类");
+		$("#redeletebtn").attr("onclick","window.location.href='/deleteClass?code="+code+"'");
+ 	} 
+ 	function c(id) { 
+ 		var code=$("#counts").children("tr").eq(id-1).children("td").eq(1).text(); 
+ 		$("#updateModal").modal("show"); 
+ 		$("#code").attr("value",code); 
+ 	} 
+ </script> 
+</html>

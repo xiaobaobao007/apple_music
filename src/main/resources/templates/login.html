@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<style>
+body {
+	background: url(background/login.jpg) no-repeat;
+	background-size: 100%;
+}
+</style>
+
+<head>
+<title>登陆</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}" />
+<link rel="stylesheet" type="text/css"
+	href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+</head>
+<body>
+	<div class="login-form" align="center" style="margin-top: 20%;">
+		<form id="loginForm" th:action="@{/login}" method="post">
+			<input type="text" class="form-control" id="loginName"
+				name="loginName" placeholder="请输入用户名"
+				style="background: none; width: 200px;" autocomplete="off">
+			<br /> <input type="text" class="form-control" id="password"
+				name="password" placeholder="请输入密码" autocomplete="off"
+				style="margin: 20px 0px 0px 0px; background: none; width: 200px;" />
+			<br />
+			<button id="btn" type="submit" style="display: none"></button>
+			<br /> <a id="login" href="#"> <strong>登陆</strong>
+			</a> &nbsp;&nbsp;&nbsp; <a id="regist" href="#"> <strong>注册</strong>
+			</a><br /> <br /> <a id="otherlogin" href="#"> <strong>游客登陆</strong></a>
+		</form>
+	</div>
+</body>
+<script>
+	$(document).ready(function() {
+// 		var explorer =navigator.userAgent ;
+// 		var suc="欢迎使用本系统，网页还处于维护状态，有问题请进入系统后进行反馈。";
+// 		if (explorer.indexOf("Chrome") >= 0) {
+// 			alert(suc);
+// 		}
+// 		else if (explorer.indexOf("Safari") >= 0) {
+// 			alert(suc);
+// 		}
+// 		else{
+// 			alert("建议使用Chrome或Safari浏览器！！！\n"+suc);
+// 		}
+		var loginName = $("#loginName");
+		var password = $("#password");
+		if (window.location.search == "?error") {
+			loginName.attr("placeholder", "账号输入错误");
+			password.attr("placeholder", "密码输入错误");
+			loginName.attr("class", "form-control form-red-control");
+			password.attr("class", "form-control form-red-control");
+		}
+		$("#login").click(function() {
+			loginName.attr("class", "form-control");
+			password.attr("class", "form-control");
+			if (loginName.val() == "") {
+				loginName.attr("placeholder", "输入为空");
+				loginName.attr("class", "form-control form-red-control");
+			} else if (password.val() == "") {
+				password.attr("placeholder", "输入为空");
+				password.attr("class", "form-control form-red-control");
+			} else {
+				$('#btn').trigger("click");
+			}
+		});
+		$("#otherlogin").click(function() {
+			loginName.val("visitor");
+			password.val("0");
+			$('#btn').trigger("click");
+		});
+		$("#regist").click(function() {
+			window.location.href = "/regist";
+		});
+	});
+</script>
+</html>

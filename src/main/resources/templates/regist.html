@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<style>
+body {
+	background: url(background/regist.jpg) no-repeat;
+	background-size: 100%;
+}
+</style>
+
+<head>
+<title>注册</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}" />
+<link rel="stylesheet" type="text/css"
+	href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+</head>
+<body>
+	<div class="login-form" align="center" style="margin-top:15%;">
+		<form id="loginForm" th:action="@{/uploadUs}" method="post">
+			<input type="text" class="form-control" id="name" name="username"
+				placeholder="请输入用户名" autocomplete="off"
+				style="margin: 20px 0px 0px 0px; background: none; width: 200px;" />
+			<br />
+			<input type="text" class="form-control" id="loginName" name="loginName"
+				placeholder="请输入账号" autocomplete="off"
+				style="margin: 20px 0px 0px 0px; background: none; width: 200px;" />
+			<br />
+			<input type="text" class="form-control" id="password" name="password"
+				placeholder="请输入密码" autocomplete="off"
+				style="margin: 20px 0px 0px 0px; background: none; width: 200px;" />
+			<br />
+			<input type="text" class="form-control" id="repassword"
+				placeholder="请确认密码" autocomplete="off"
+				style="margin: 20px 0px 0px 0px; background: none; width: 200px;" />
+			<br />
+			<button id="btn" type="submit" style="display: none"></button>
+			<br /> <a id="login" href="#"> <strong>返回登陆</strong>
+			</a> &nbsp;&nbsp;&nbsp; <a id="regist" href="#"> <strong>注册</strong>
+			</a>
+		</form>
+	</div>
+</body>
+<script>
+	$(document).ready(function() {
+		var name = $("#name");
+		var loginName = $("#loginName");
+		var password = $("#password");
+		var repassword = $("#repassword");
+		if(window.location.search=="?error"){
+			loginName.attr("placeholder","账号已经存在");
+			loginName.attr("class","form-control form-red-control");
+		}
+		$("#regist").click(function() {
+			name.attr("class","form-control");
+			loginName.attr("class","form-control");
+			password.attr("class","form-control");
+			repassword.attr("class","form-control");
+			if (name.val() == "") {
+				name.attr("placeholder","输入为空");
+				name.attr("class","form-control form-red-control");
+			}
+			else if (loginName.val() == "") {
+				loginName.attr("placeholder","输入为空");
+				loginName.attr("class","form-control form-red-control");
+			}
+			else if (password.val() == "") {
+				password.attr("placeholder","输入为空");
+				password.attr("class","form-control form-red-control");
+			}
+			else if (repassword.val() == "") {
+				repassword.attr("placeholder","输入为空");
+				repassword.attr("class","form-control form-red-control");
+			}
+			else if(password.val()!=repassword.val()){
+				password.val("");
+				repassword.val("");
+				password.attr("placeholder","输入密码不一致");
+				repassword.attr("placeholder","输入密码不一致");
+				password.attr("class","form-control form-red-control");
+				repassword.attr("class","form-control form-red-control");
+			}
+			else
+				$('#btn').trigger("click");
+		});
+		$("#login").click(function() {
+			window.location.href="/login";
+		});
+	});
+</script>
+</html>

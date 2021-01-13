@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title>音乐收藏系统</title>
+<link rel="stylesheet" th:href="@{../css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{../css/bootstrap-theme.min.css}" />
+<script type="text/javascript" th:src="@{../js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{../js/bootstrap.min.js}"></script>
+<style> 
+.div-a{ float:left;width:11%;} 
+.div-b{ float:right;width:88%;} 
+</style> 
+</head>
+<body>
+	<div class="panel panel-primary fixed-top">
+		<div class="panel-heading" style="height: 55px;">
+			<font size="4">大红包音乐欢迎您</font>
+			<font size="4" style="margin-left: 25px; color: #6ee694fc;">您的身份：</font>
+			<b th:text="${session.user}" style="font-size: 120%; color: #6ee694fc;"></b>
+			<font size="4" style="margin-left: 15px; color: #6ee694fc;">您的权限：</font>
+			<b id="role" th:text="${session.role}" style="font-size: 120%; color: #6ee694fc;"></b>
+			<font size="4" style="margin-left: 15px; color: #6ee694fc;">您的剩余下载次数为：</font>
+			<b id="downloadMusicbb" th:text="${session.downloadMusic}" style="font-size: 120%; color: #6ee694fc;"></b>
+			<button type="button" class="btn btn-primary pull-right"
+				onclick="window.location.href ='/logout'">退出当前用户</button>
+			<b id="suc" th:text="${success}"
+				style="margin-left: 50px; font-size: 120%; color: red; display: none;"></b>
+			<b id="fai" th:text="${faild}"
+				style="margin-left: 50px; font-size: 120%; color: red; display: none;"></b>
+		</div>
+	</div>
+	<div class="container div-a" >
+		<div class="navbar navbar-expand-sm bg-info navbar-dark" style="height: 600px;">
+			<div id="tabllle1" class="panel panel-primary" >
+				<div class="panel-heading">
+					<font size="4">音乐界面</font>
+				</div>
+			</div>
+			
+			<div id="tabllle2" class="panel panel-success">
+				<div class="panel-heading">
+					<font size="4" >收藏音乐界面</font>
+				</div>
+			</div>
+			<div id="tabllle3" class="panel panel-primary">
+				<div class="panel-heading">
+					<font size="4" >用户信息界面</font>
+				</div>
+			</div>
+			<div id="tabllle4" class="panel panel-primary">
+				<div class="panel-heading">
+					<font size="4" >音乐分类界面</font>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container div-b" style="margin-right:0px;">
+		<div class="col-md-12">
+			<div id="demo" class="collapse">
+				<div id="breadcrumbmenu" style="margin: 20px 0px 5px 0px; display: none">
+					<div class="breadcrumb" id="breadcrumb">
+						<strong>当前所选：</strong>
+					</div>
+				</div>
+				<table class="table table-bordered table-hover"
+					style="margin: 5px 0px 5px 0px;">
+					<tr>
+						<td>
+							<div class="has-feedback">
+								<span>
+									<strong>音乐名称：</strong>
+								</span>
+								<input type='text' id="inputname" name="name" class="form-control"
+									style="margin-left: 10px; width: 220px;" placeholder="请输入要查询的音乐名称">
+								&nbsp;&nbsp;
+								<span id="deletesearchname" class="glyphicon glyphicon-remove btn form-control-feedback"
+									style="pointer-events: auto; left: 265px; display: none"></span>
+								<span class="glyphicon glyphicon-search" id="namesearch" style="cursor: pointer"></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>
+								<strong>风格：</strong>
+							</span>
+							<a classs="men" name="classs.code" role="musicclasstrans" tabindex="-1"
+								style="margin-left: 50px;" th:each="list:${session.musicclass}"
+								th:value="${list.code}" th:text="${list.classname}"></a>
+							<span  id="deletesearchclass" class="glyphicon glyphicon-remove btn"
+								style="pointer-events: auto; left: 5px; top: -1px; display: none"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="has-feedback">
+								<span>
+									<strong>点击量：</strong>
+								</span>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<span>最小值:</span>
+								<input type='text' class="form-control" id="minclicks" name="minclicks"
+									style="margin-left: 10px; width: 100px;" data-toggle="tooltip"
+									data-placement="top" placeholder="最小值"
+									title="请输入要查询音乐点击量的最小值(可以只填写最小值)">
+								&nbsp;&nbsp;
+								<span id="searchmin" class="glyphicon glyphicon-remove btn form-control-feedback"
+									style="pointer-events: auto; left: 205px; display: none"></span>
+								<span>最大值:</span>
+								<input type='text' class="form-control" id="maxclicks" name="maxclicks"
+									style="margin-left: 10px; width: 100px;" data-toggle="tooltip"
+									data-placement="top" placeholder="最大值"
+									title="请输入要查询音乐点击量的最大值(可以只填写最大值)">
+								&nbsp;&nbsp;
+								<span id="searchmax" class="glyphicon glyphicon-remove btn form-control-feedback"
+									style="pointer-events: auto; left: 380px; display: none"></span>
+								<span class="glyphicon glyphicon-search" style="cursor: pointer"
+									id="clicksearch"></span>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="panel panel-primary" style="margin: 10px 0px 0px 0px;">
+				<div class="panel-heading">
+					<h3 class="panel-title">音乐列表</h3>
+				</div>
+				<div class="panel-body">
+					<!-- table-responsive:响应式表格,在一个表展示所有的数据,当不够显示的时候可以左右滑动浏览-->
+					<div class="table table-responsive">
+						<!--
+		                	.table-bordered 类为表格和其中的每个单元格增加边框。
+		                	.table-hover 类可以让 <tbody> 中的每一行对鼠标悬停状态作出响应。
+		                -->
+						<table class="table table-bordered table-hover">
+							<tr>
+								<th class="text-center">音乐编号</th>
+								<th class="text-center">音乐名称</th>
+								<th class="text-center">歌手名称</th>
+								<th class="text-center">音乐风格</th>
+								<th class="text-center">音乐路径</th>
+								<th class="text-center">音乐</th>
+								<th class="text-center">音乐点击量</th>
+								<th class="text-center">音乐图片</th>
+								<th id="operation" class="text-center">操作</th>
+							</tr>
+							<tbody class="text-center" id="musicdetiles">
+								<tr th:each="musicone,musicstat:${session.musics}">
+									<td th:text="${musicstat.count}" style="display: none"></td>
+									<td th:text="${musicone.number}"></td>
+									<td>
+										<a th:href="@{|/musicDetails/${musicone.src}|}"
+											th:text="${musicone.name}"></a>
+									</td>
+									<td th:text="${musicone.singer}"></td>
+									<td th:id="${musicone.classs.code}"
+										th:text="${musicone.classs.classname}"></td>
+									<td th:text="${musicone.src}"></td>
+									<td>
+										<audio th:src="@{'/music/'+${musicone.src}}"
+											th:id="${musicstat.count}"></audio>
+										<input type="button" th:id="${musicstat.count}+.1"
+											class="btn btn-primary music"
+											th:onclick="'javascript:a('+${musicstat.count}+')'" value="播放"></input>
+										&nbsp;&nbsp;
+										<input id="downloadbtn" type="button" value="下载音乐" class="btn btn-primary" />
+									</td>
+									<td th:id="${musicstat.count}+.2" th:text="${musicone.clicks}"
+										th:style="'color:'+@{(${musicone.clicks}>10000?'red':'blue')}"></td>
+									<td>
+										<img th:src="@{'/img/'+${musicone.image}}" height="60" width="60"
+											data-placement="top" title="点击查看照片">
+									</td>
+									<td id="operation_">
+										<input type="button" class="btn btn-primary qwe"
+											th:onclick="'javascript:b('+${musicone.number}+')'" value="删除收藏">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="picturemodal" align="center">
+				<div style="margin: 50px 0px 0px 0px;">
+					<img id="picturemodalimg" height="500" />
+				</div>
+			</div>
+			<div class="modal fade" id="deletemodal" align="center"
+				style="margin: 100px 200px 0px 200px;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="redelete"></h4>
+							</br>
+							</br>
+							<input type="button" id="redeletebtn" class="btn btn-success"
+								value="确认删除">
+							&nbsp;&nbsp;
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消删除</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$("[class='btn btn-primary qwe']").click(function(){
+			var div=$(this).parents("tr")
+			var number=div.children().eq(1).text();
+			div.hide();
+			$.ajax({
+		  		type:"get",//提交方式
+		  		url:"/updateMusic_cloect",//提交的映射路径
+		  		//JSON.stringify({})是一个方法。id是名称，book_id是传递的值。
+		  		data:{number},
+		  		success:function(data,status){
+// 		  			alert("添加成功！");
+		  		},
+		  		error:function(data,status){
+// 		  			alert("添加失败！");
+		  		}	  					  		
+		  	});
+		});
+		function c(id) {//修改信息自动填写
+			var childs = $("#musicdetiles").children("tr").eq(id - 1).children(
+					"td");
+			var img = childs.eq(8).children("img").attr("src");
+			$("#updateModal").modal("show");
+			img = img.substr(5);
+			$("#number").attr("value", childs.eq(1).text());
+			$("#name").attr("value", childs.eq(2).text());
+			$("#singer").attr("value", childs.eq(3).text());
+			$("#classss").attr("value", childs.eq(4).text());
+			$("#srcfield1").attr("value", childs.eq(5).text());
+			$("#clicks").attr("value", childs.eq(7).text());
+			$("#imagefield1").attr("value", img);
+		}
+		function getUrlParam() {//获取当前搜索状态
+			//(^|)代表开始 ,(|$)代表结束 ,&代表空，*表示重复，^代表非
+			var name = new RegExp("(^|&)name=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(name);
+			if (r != null) {
+				$("#demo").collapse();
+				$("#breadcrumbmenu").attr("style", "margin: 20px 0px 5px 0px;");
+				$("#deletesearchname").show();
+				$("#inputname").val(decodeURI(r[2]));
+				$("#breadcrumb")
+						.append(
+								"<li class='active'>音乐名称: " + decodeURI(r[2])
+										+ "</li>");
+			}
+			name = new RegExp("(^|&)classs.code=([^&]*)(&|$)");
+			r = window.location.search.substr(1).match(name);
+			if (r != null) {
+
+				$("#demo").collapse();
+				$("#breadcrumbmenu").attr("style", "margin: 20px 0px 5px 0px;");
+				$("#deletesearchclass").show();
+				var classs = $("[classs='men']").eq(unescape(r[2]) - 1);
+				classs.attr("style", "margin-left:50px;color:red;")
+				$("#breadcrumb").append(
+						"<li class='active'>音乐风格: " + classs.text() + "</li>");
+			}
+			name = new RegExp("(^|&)minclicks=([^&]*)(&|$)");
+			r = window.location.search.substr(1).match(name);
+			if (r != null) {
+
+				$("#demo").collapse();
+				$("#breadcrumbmenu").attr("style", "margin: 20px 0px 5px 0px;");
+				$("#searchmin").show();
+				$("#minclicks").val(decodeURI(r[2]));
+				$("#breadcrumb").append(
+						"<li class='active'>音乐点击量最小值: " + decodeURI(r[2])
+								+ "</li>");
+			}
+			name = new RegExp("(^|&)maxclicks=([^&]*)(&|$)");
+			r = window.location.search.substr(1).match(name);
+			if (r != null) {
+
+				$("#demo").collapse();
+				$("#breadcrumbmenu").attr("style", "margin: 20px 0px 5px 0px;");
+				$("#searchmax").show();
+				$("#maxclicks").val(decodeURI(r[2]));
+				$("#breadcrumb").append(
+						"<li class='active'>音乐点击量最大值: " + decodeURI(r[2])
+								+ "</li>");
+			}
+		}
+		function musicplay(btn) {//音乐按钮控制
+			btn.attr("value", "暂停");
+			btn.attr("class", "btn btn-success");
+			btn.prev()[0].play();
+		}
+		function musicpause(btn) {//音乐按钮控制
+			btn.attr("value", "播放");
+			btn.attr("class", "btn btn-primary");
+			btn.prev()[0].pause();
+			btn.prev()[0].currentTime = 0;
+		}
+		function musicnone(btn) {//音乐按钮控制
+			btn.attr("value", "错误");
+			btn.attr("class", "btn btn-danger");
+			btn.prev()[0].play();
+		}
+		//文件准备好！！！！！！！！！！！！！！！！！！！！！！！！！！
+	$(document).ready(function() {
+		if($("#downloadMusicbb").text()<"0"){
+			$("#downloadMusicbb").text("无限制");
+		}
+		if($("#downloadMusicbb").text()=="0"){
+			$("#downloadMusicbb").text("无下载次数");
+			$("[id='downloadbtn']").attr("disabled","disabled");
+		}
+		$("#tabllle1").click(function(){
+			window.location.href="/getStusByPage?pageIndex=1&pageSize=5";
+		});
+		
+		$("#tabllle3").click(function(){
+			window.location.href="/findAlluserInfo?pageIndex=1&pageSize=5";
+		});
+		$("#tabllle4").click(function(){
+			window.location.href="/findAllClass";
+		});
+		$("input").attr("autocomplete", "off");//取消所有输入框的输入历史
+		getUrlParam();//获取搜索状态
+		var role = $("#role").text().toString();
+		if (role != "[ROLE_ADMIN]") {
+			$("#tabllle3").hide();
+			$("#tabllle4").hide();
+			$("#addmusicbtn").hide();
+			$("#js-export").hide();
+		}
+		if(role == "[ROLE_OTHER]"){
+			$("[id='downloadbtn']").hide();
+		}
+		$("[id='downloadbtn']").click(function(){
+			var filename=$(this).parents("td").prev().text();
+			var num=$("#downloadMusicbb").text();
+			if(num>0&&num<=100){
+				if(num==1){
+					$("[id='downloadbtn']").attr("disabled","disabled");
+				}
+				$("#downloadMusicbb").text(num-1);
+				window.location.href="/downloadmusic?filename="+filename;
+			}
+			if(num=="无限制"){
+				window.location.href="/downloadmusic?filename="+filename;
+			}
+// 			$.ajax({
+// 		  		type:"get",//提交方式
+// 		  		url:"/downloadmusic",//提交的映射路径
+// 		  		//JSON.stringify({})是一个方法。id是名称，book_id是传递的值。
+// 		  		data:{filename},
+// 		  		success:function(data,status){
+// // 		  			alert("添加成功！");
+// 		  		},
+// 		  		error:function(data,status){
+// // 		  			alert("添加失败！");
+// 		  		}	  					  		
+// 		  	});
+		});
+		if(role == "[ROLE_OTHER]"){
+			$("[id='downloadbtn']").hide();
+		}
+		$("#clicksearch").click(function(){//点击量查询
+			var url=window.location.search.substr(1);
+			if($("#minclicks").val()!=""){
+				var reg = new RegExp("(^|)minclicks=([^&]*)(&|$)");  
+				var r= url.match(reg);
+				if (r!=null){
+					url=url.replace(reg,"minclicks="+$("#minclicks").val()+"&");
+				}
+				else{
+					url="minclicks="+$("#minclicks").val()+"&"+url;
+				}
+			}
+			if($("#maxclicks").val()!=""){
+				var reg = new RegExp("(^|)maxclicks=([^&]*)(&|$)");  
+				var r= url.match(reg);
+				if (r!=null){
+					url=url.replace(reg,"maxclicks="+$("#maxclicks").val()+"&");
+				}
+				else{
+					url="maxclicks="+$("#maxclicks").val()+"&"+url;
+				}
+			}
+			if($("#minclicks").val()!=""||$("#maxclicks").val()!=""){
+				window.location.href="/getStusByPage?"+url;
+			}
+		});
+		$("[class~='glyphicon-remove']").click(function(){//删除当前单个搜索
+			name=$(this).prev().attr("name");
+			var url=window.location.search.substr(1);
+			var reg = new RegExp("(^|)"+name+"=([^&]*)(&|$)");  
+			var r= url.match(reg);
+			url=url.replace(reg,"");
+			window.location.href="/getStusByPage?"+decodeURI(url);
+		});
+		var prev="";
+		$("[class='btn btn-primary music']").click(function(){//音乐一次只播放一个
+			var audio=$(this).prev()[0];
+			if(audio.paused&&audio.readyState==4){
+				if (prev !== "") {
+					musicpause(prev);
+					prev = $(this);
+					musicplay($(this));
+				}
+				else{
+					prev = $(this);
+					musicplay($(this));
+				}
+			}
+			else if(audio.played&&audio.readyState==4){
+				prev="";
+				musicpause($(this));
+			}
+			else{
+				if (prev !== "") {
+					musicpause(prev);
+					prev = $(this);
+					musicnone($(this));
+				}
+				else{
+					prev = $(this);
+					musicnone($(this));
+				}
+			}
+		});
+		$("#namesearch").click(function(){
+			var musicname=$("#inputname").val();
+			if(musicname!=""){
+				var newurl="";
+				var reg = new RegExp("(^|)name=([^&]*)(&|$)");  
+				var url=window.location.search.substr(1);
+				var r= url.match(reg);
+				if (r!=null){
+					newurl=url.replace(reg,"name="+musicname+"&");
+				}
+				else{
+					newurl="name="+musicname+"&"+url;
+				}
+				window.location.href="/getStusByPage?"+newurl;
+			}
+		});
+		$("[data-toggle='tooltip']").tooltip();//警告框
+		$("[role='musicclasstrans']").click(function(){//搜索跳转页面
+			var newurl="";
+			var reg = new RegExp("(^|)classs.code=([^&]*)(&|$)");  
+			var url=window.location.search.substr(1);//?name=1&pageIndex=1&pageSize=5
+			var r= url.match(reg);
+			if (r!=null){
+				newurl=url.replace(reg,"classs.code="+$(this).attr("value")+"&");
+			}
+			else{
+				newurl="classs.code="+$(this).attr("value")+"&"+url;
+			}
+			window.location.href="/getStusByPage?"+newurl;
+		});
+		$(".pagination li").click(function() {//翻页
+			if ($(this).attr("class")==="page-item") {
+				var reg = new RegExp("(^|)pageIndex=([^&]*)(&|$)"); 
+				var page = $(this).children("a").attr("pageIndex");
+				var url=window.location.search.substr(1);//?name=1&pageIndex=1&pageSize=5
+				var newurl=url.replace(reg,"pageIndex="+page+"&");
+				window.location.href = window.location.pathname+"?"+newurl;
+			}
+		});
+		$('#js-export').click(function(){
+            window.location.href="/export";
+		});
+		$('.menu').click(function(){
+            $("#classs").val($(this).text())
+		});
+		$('.menuu').click(function(){
+            $("#classss").val($(this).text());
+            
+		});
+		$(function () { $("[data-toggle='tooltip']").tooltip(); });
+		$("img").click(function() {
+			var src= $(this).attr("src");
+			$("#picturemodalimg").attr("src",src);
+			$("#picturemodal").modal("show");
+		});
+		$("#picturemodalimg").click(function() {
+			$("#picturemodal").modal("hide");
+		});
+		$("input").click(function() {
+			if($(this).attr("value")=="暂停"){
+				var numbe=parseInt($(this).parents("tr").find('td').eq(1).text());
+				var cli=parseInt($(this).parents("td").next().text())+1;
+				$(this).parents("td").next().text(cli);
+				var bmyy=123123;
+// 				var header=$("[name='_csrf_header']").attr("content");
+// 				var token=$("[name='_csrf']").attr("content");
+				$.ajax({
+			  		type:"get",//提交方式
+			  		url:"/updateMusic_clicks",//提交的映射路径
+// 			  		beforeSend:function(xhr){
+// 			  			xhr.setRequestHeader(header,token);
+// 			  		},
+			  		//JSON.stringify({})是一个方法。id是名称，book_id是传递的值。
+			  		data:{numbe},
+			  		success:function(data,status){
+// 			  			alert("添加成功！");
+			  		},
+			  		error:function(data,status){
+// 			  			alert("添加失败！");
+			  		}	  					  		
+			  	});
+			}
+		});
+		if ($("#suc").text() != "") {
+			$("#suc").show();
+		}
+		if ($("#fai").text() != "") {
+			$("#fai").show();
+		}
+	});
+	</script>
+</html>

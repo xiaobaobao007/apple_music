@@ -1,0 +1,181 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="formController">
+		<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data" th:action="@{/uploadMusic}"
+				style="margin: 75px 150px 0px 200px;">
+				<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content animated bounceInRight" style="margin: 50px -10px 0px -30px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+								<h4 class="modal-title" id="exampleModalLabel">
+									<font size="4"><b>&nbsp;&nbsp;&nbsp;添加新音乐</b></font>
+								</h4>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐编号</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" style="width: 300px" name="number"placeholder="请输入音乐编号"/>
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐名称</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" style="width: 300px" name="name"placeholder="请输入音乐名称" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">歌手名称</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" name="singer" style="width: 300px" placeholder="请输入歌手名称" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐风格</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="classs" name="classname" style="width: 300px" placeholder="请选择或新添加音乐风格" 
+									onclick="$('#dropdown-1').trigger('click')"/>
+									&nbsp;&nbsp;
+									<input id="dropdown-1" style="display: none" data-toggle="dropdown" />
+									<ul class="dropdown-menu" role="menu" style="margin: 0px 0px 0px 14px;" aria-labelledby="dropdownMenu1">
+										<li class="col-sm-10" role="presentation" style="width: 300px">
+										<a class="menu" role="menuitem" tabindex="-1" th:each="list:${session.musicclass}" th:value="${list.code}"
+											th:text="${list.classname}" ></a></li>
+									</ul>
+								</div>
+							</div>
+							
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐路径</label>
+								<div class="col-sm-10">
+									<input type='text' class="form-control" name='src' id="srcfield" style="width: 300px" placeholder="请输入音乐路径" />
+									&nbsp;&nbsp;
+									<input type="file" name="file" style="height: 0px; overflow: hidden; position: absolute;" id="srcfile" size="28"
+										onchange="document.getElementById('srcfield').value=this.value" />
+
+									<input type="button" value="音乐文件上传" class="btn btn-success" onclick="$('#srcfile').trigger('click')" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐点击量</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" name="clicks" style="width: 300px" placeholder="请输入音乐点击量" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐图片</label>
+								<div class="col-sm-10">
+
+									<input type='text' class="form-control" name='image' id="imagefield" style="width: 300px" placeholder="请输入图片路径" />
+									&nbsp;&nbsp;
+									<input type="file" name="file" style="height: 0px; overflow: hidden; position: absolute;" id="imagefile" size="28"
+										onchange="document.getElementById('imagefield').value=this.value" />
+<!-- 									onchange="$('#imagefield').attr('value',$(this).attr('value'))" -->
+									<input type="button" value="音乐图片上传" class="btn btn-success" onclick="$('#imagefile').trigger('click')" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 30px 20px;">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-success">&nbsp;&nbsp;提&nbsp;交 &nbsp;&nbsp;</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			
+			
+			
+			
+			<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data" th:action="@{/updateMusic}"
+				style="margin: 75px 150px 0px 200px;">
+				<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content animated bounceInRight" style="margin: 50px -10px 0px -30px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+								<h4 class="modal-title" id="exampleModalLabel">
+									<font size="4"><b>&nbsp;&nbsp;&nbsp;更新音乐</b></font>
+								</h4>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐编号</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" style="width: 300px" onfocus="this.blur();" id="number" name="number"
+									data-toggle="tooltip" data-placement="top" title="不允许修改" placeholder="请输入音乐编号"/>
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐名称</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" style="width: 300px" id="name" name="name"placeholder="请输入音乐名称" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">歌手名称</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="singer" name="singer" style="width: 300px" placeholder="请输入歌手名称" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐风格</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="classss" name="classname" onfocus="this.blur();" style="width: 300px" placeholder="请选择音乐风格" 
+									onclick="$('#dropdown-2').trigger('click')"/>
+									<input id="dropdown-2" style="display: none" data-toggle="dropdown" />
+									<ul class="dropdown-menu" role="menu" style="margin: 0px 0px 0px 14px;" aria-labelledby="dropdownMenu1">
+										<li class="col-sm-10" role="presentation" style="width: 300px">
+										<a class="menuu" role="menuitem" tabindex="-1" th:each="list:${session.musicclass}" th:value="${list.code}"
+											th:text="${list.classname}"></a></li>
+									</ul>
+								</div>
+							</div>
+							
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐路径</label>
+								<div class="col-sm-10">
+									<input type='text' class="form-control" id='srcfield1' name='src' style="width: 300px" placeholder="请输入音乐路径" />
+									&nbsp;&nbsp;
+									<input type="file" name="file" style="height: 0px; overflow: hidden; position: absolute;" id="srcfile11" size="28"
+										onchange="document.getElementById('srcfield1').value=this.value" />
+
+									<input type="button" value="音乐文件上传" class="btn btn-success" onclick="$('#srcfile11').trigger('click')" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐点击量</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="clicks" name="clicks" style="width: 300px" placeholder="请输入音乐点击量" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 20px;">
+								<label for="firstname" class="col-sm-2 control-label">音乐图片</label>
+								<div class="col-sm-10">
+
+									<input type='text' class="form-control" id='imagefield1' name='image' style="width: 300px" placeholder="请输入图片路径" />
+									&nbsp;&nbsp;
+									<input type="file" name="file" style="height: 0px; overflow: hidden; position: absolute;" id="imagefile11" size="28"
+										onchange="document.getElementById('imagefield1').value=this.value" />
+
+									<input type="button" value="音乐图片上传" class="btn btn-success" onclick="$('#imagefile11').trigger('click')" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 30px 20px;">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-success">&nbsp;&nbsp;更&nbsp;新 &nbsp;&nbsp;</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+
+	</div>
+</body>
+
+</html>

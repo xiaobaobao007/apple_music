@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title>用户信息管理</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}" />
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<style> 
+.div-a{ float:left;width:11%;} 
+.div-b{ float:left;width:88%;} 
+</style> 
+</head>
+<body>
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="height: 55px;">
+			<font size="4">大红包音乐欢迎您</font>
+			<font size="4" style="margin-left: 25px; color: #6ee694fc;">您的身份：</font>
+			<b th:text="${session.user}" style="font-size: 120%; color: #6ee694fc;"></b>
+			<font size="4" style="margin-left: 15px; color: #6ee694fc;">您的权限：</font>
+			<b id="role" th:text="${session.role}" style="font-size: 120%; color: #6ee694fc;"></b>
+			<button type="button" class="btn btn-primary pull-right"
+				onclick="window.location.href ='/logout'">退出当前用户</button>
+			<b id="suc" th:text="${success}"
+				style="margin-left: 50px; font-size: 120%; color: red; display: none;"></b>
+			<b id="fai" th:text="${faild}"
+				style="margin-left: 50px; font-size: 120%; color: red; display: none;"></b>
+		</div>
+	</div>
+	<div class="container div-a" >
+		<div class="navbar navbar-expand-sm bg-info navbar-dark" style="height: 600px;">
+			<div id="tabllle1" class="panel panel-primary" >
+				<div class="panel-heading">
+					<font size="4">音乐界面</font>
+				</div>
+			</div>
+			
+			<div id="tabllle2" class="panel panel-primary">
+				<div class="panel-heading">
+					<font size="4" >收藏音乐界面</font>
+				</div>
+			</div>
+			<div  class="panel panel-success">
+				<div class="panel-heading">
+					<font size="4" >用户信息界面</font>
+				</div>
+			</div>
+			<div id="tabllle4" class="panel panel-primary">
+				<div class="panel-heading">
+					<font size="4" >音乐分类界面</font>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container div-b">
+		<div class="col-md-12">
+			<div class="has-feedback">
+				<span>
+					<strong>账号：</strong>
+				</span>
+				<input type='text' id="inputname" name="name" class="form-control"
+					style="margin-left: 10px;margin-top:10px; width: 220px;" placeholder="请输入要查询的用户账号">
+				&nbsp;&nbsp;
+				<span id="deletesearchname" class="glyphicon glyphicon-remove btn form-control-feedback"
+					style="pointer-events: auto; left: 238px;top:10px;"></span>
+				<span class="glyphicon glyphicon-search" id="loginnamesearch" style="cursor: pointer"></span>
+			</div>
+			<div class="panel panel-primary"  style="margin: 10px 0px 0px 0px;">
+				<div class="panel-heading">
+					<h3 class="panel-title">用户列表</h3>
+				</div>
+				<div class="panel-body">
+					<!-- table-responsive:响应式表格,在一个表展示所有的数据,当不够显示的时候可以左右滑动浏览-->
+					<div class="table table-responsive">
+						<!--
+		                	.table-bordered 类为表格和其中的每个单元格增加边框。
+		                	.table-hover 类可以让 <tbody> 中的每一行对鼠标悬停状态作出响应。
+		                -->
+						<table class="table table-bordered table-hover">
+							<tr>
+								<th class="text-center">序号</th>
+								<th class="text-center">用户ID</th>
+								<th class="text-center">用户名称</th>
+								<th class="text-center">用户账号</th>
+								<th class="text-center">用户密码 </th>
+								<th class="text-center">下载次数</th>
+								<th class="text-center">用户权限</th>
+								<th class="text-center">操作</th>
+							</tr>
+
+							<tbody class="text-center" id="counts">
+								<tr th:each="user,usertat:${session.Objects}">
+									<td th:text="${usertat.count}" class="center"></td>
+									<td th:text="${user.id}"></td>
+									<td th:text="${user.username}"></td>
+									<td th:text="${user.loginName}"></td>
+									<td class="topassword" th:text="${user.password}"></td>
+									<td th:text="${user.downloadnums}"></td>
+									<td th:each="role:${user.roles}" th:text="${role.authority}">
+									<td id="operation_">
+										<input type="button" class="btn btn-primary"
+											th:onclick="'javascript:c('+${usertat.count}+')'" value="修改">
+										&nbsp;&nbsp;
+										<input type="button" class="btn btn-primary"
+											th:onclick="'javascript:b('+${user.id}+')'" value="删除">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="text-center">
+							<div th:replace="other/paging::pageController" /></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<form class="form-horizontal" role="form" method="post"
+				enctype="multipart/form-data" th:action="@{/updateUs}"
+				style="margin: 75px 150px 0px 200px;">
+				<div class="modal fade" id="updateModal" tabindex="-1"
+					role="dialog" aria-labelledby="exampleModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content animated bounceInRight"
+							style="margin: 20px 20px 0px -20px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+								<h4 class="modal-title" id="exampleModalLabel">
+									<font size="4"><b>更新用户</b></font>
+								</h4>
+							</div>
+							<input type="text"id="id" name="id" style="display: none"/>
+							<div class="form-group" style="margin: 30px 0px 0px 0px;">
+								<label for="firstname" class="col-sm-2 control-label">用户名称</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="username" name="username" 
+										 style="width: 300px" placeholder="请输入编号" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 0px;">
+								<label for="firstname" class="col-sm-2 control-label">用户账号</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="loginName" name="loginName" 
+										 style="width: 300px" placeholder="请输入编号" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 0px;">
+								<label for="firstname" class="col-sm-2 control-label">用户密码</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="password" name="password" 
+										 style="width: 300px" placeholder="请输入编号" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 0px;">
+								<label for="firstname" class="col-sm-2 control-label">下载次数</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="downloadnums" name="downloadnums" 
+										 style="width: 300px" placeholder="请输入编号" />
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 0px 0px;">
+								<label for="firstname" class="col-sm-2 control-label">用户权限</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="roles" name="authority" 
+										 style="width: 300px" placeholder="请选择泉下" onfocus="this.blur();"
+										 onclick="$('#dropdown-2').trigger('click')"/>
+									
+									<input id="dropdown-2" style="display: none" data-toggle="dropdown" />
+									<ul class="dropdown-menu" role="menu" style="margin: 0px 0px 0px 14px;" aria-labelledby="dropdownMenu1">
+										<li class="col-sm-10" role="presentation" style="width: 300px">
+										<a class="menu b" role="menuitem" tabindex="-1" th:each="list:${session.roles}" th:value="${list.id}"
+											th:text="${list.authority}" ></a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="form-group" style="margin: 30px 0px 30px 20px;">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-success">&nbsp;&nbsp;提&nbsp;交 &nbsp;&nbsp;</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+	$(document).ready(function() {
+		
+		var name = new RegExp("(^|&)name=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(name);
+		if (r != null) {
+			$("#inputname").val(decodeURI(r[2]));
+		}
+		$("#tabllle1").click(function(){
+			window.location.href="/getStusByPage?pageIndex=1&pageSize=5";
+		});
+		$("#tabllle2").click(function(){
+			window.location.href="/getcloectmusic?pageIndex=1&pageSize=5";
+		});
+		$("#tabllle3").click(function(){
+			window.location.href="/findAlluserInfo?pageIndex=1&pageSize=5";
+		});
+		$("#tabllle4").click(function(){
+			window.location.href="/findAllClass";
+		});
+		$("#deletesearchname").click(function(){
+			if($("#inputname").val()!=""){
+				window.location.href = "/findAlluserInfo?pageIndex=1&pageSize=5";	
+			}
+		});
+		$("#loginnamesearch").click(function(){
+			if($("#inputname").val()!=""){
+			window.location.href = "/finduserInfobyname?name="+$("#inputname").val()+"&pageIndex=1&pageSize=5";
+			}
+		});
+		$(".pagination li").click(function() {//翻页
+			if ($(this).attr("class")==="page-item") {
+				var page = $(this).children("a").attr("pageIndex");
+				window.location.href = "/findAlluserInfo?pageIndex="+page+"&pageSize=5";
+			}
+		});
+		$("[class='menu b']").click(function() {
+			$("#roles").attr("value",$(this).text());
+		});
+		if ($("#suc").text() != "") {
+			$("#suc").show();
+		}
+		if ($("#fai").text() != "") {
+			$("#fai").show();
+		}
+		$("[data-toggle='tooltip']").tooltip();//警告框
+	});
+	function b(id) {
+		window.location.href = "/deleteUserById?id="+id+"&pageIndex=1&pageSize=5";
+	}
+	function c(id) {
+		var childs=$("#counts").children("tr").eq(id-1).children("td");
+		$("#id").attr("value",childs.eq(1).text());
+		$("#username").attr("value",childs.eq(2).text());
+		$("#loginName").attr("value",childs.eq(3).text());
+		$("#password").attr("value",childs.eq(4).text());
+		$("#downloadnums").attr("value",childs.eq(5).text());
+		$("[id='roles']").attr("value",childs.eq(6).text());
+		$("#updateModal").modal("show");
+	}
+</script>
+</html>
